@@ -5,6 +5,7 @@ import { Mic, MicOff, Video, VideoOff, LogOut, Maximize2, Sparkles } from 'lucid
 import { Button } from '@/components/ui/button'
 import { microphones, studioScenes, type Microphone, type StudioScene } from '@/lib/microphones'
 import BackgroundEffectsPanel, { type BackgroundEffect } from './BackgroundEffectsPanel'
+import type { BackgroundEffectStatus } from './VirtualBackgroundVideo'
 
 interface StudioControlsProps {
   isMicrophoneEnabled: boolean
@@ -18,15 +19,17 @@ interface StudioControlsProps {
   onSelectScene: (scene: StudioScene) => void
   backgroundEffect: BackgroundEffect
   onBackgroundEffectChange: (effect: BackgroundEffect) => void
+  backgroundEffectStatus?: BackgroundEffectStatus
+  onRetryBackgroundEffect?: () => void
 }
 
-export default function StudioControls({ isMicrophoneEnabled, isCameraEnabled, onToggleMicrophone, onToggleCamera, onExit, selectedMicrophone, onSelectMicrophone, selectedScene, onSelectScene, backgroundEffect, onBackgroundEffectChange }: StudioControlsProps) {
+export default function StudioControls({ isMicrophoneEnabled, isCameraEnabled, onToggleMicrophone, onToggleCamera, onExit, selectedMicrophone, onSelectMicrophone, selectedScene, onSelectScene, backgroundEffect, onBackgroundEffectChange, backgroundEffectStatus, onRetryBackgroundEffect }: StudioControlsProps) {
   const [showEffects, setShowEffects] = useState(false)
   const toggleFullscreen = () => document.fullscreenElement ? void document.exitFullscreen() : void document.documentElement.requestFullscreen().catch(() => undefined)
   return (
     <div className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2">
       <div className="relative rounded-full bg-black/70 px-2 py-3 backdrop-blur-md">
-        {showEffects && <BackgroundEffectsPanel value={backgroundEffect} onChange={onBackgroundEffectChange} onClose={() => setShowEffects(false)} />}
+        {showEffects && <BackgroundEffectsPanel value={backgroundEffect} onChange={onBackgroundEffectChange} onClose={() => setShowEffects(false)} status={backgroundEffectStatus} onRetry={onRetryBackgroundEffect} />}
         <div className="flex items-center gap-2">
           <label className="sr-only" htmlFor="studio-microphone">Microphone</label>
           <select id="studio-microphone" value={selectedMicrophone.id} onChange={(event) => onSelectMicrophone(microphones.find((mic) => mic.id === event.target.value) ?? microphones[0])} className="hidden max-w-32 rounded-full border border-white/10 bg-black/40 px-3 py-2 text-xs text-white outline-none sm:block">
