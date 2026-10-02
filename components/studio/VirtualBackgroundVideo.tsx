@@ -17,7 +17,7 @@ interface VirtualBackgroundVideoProps {
   onProcessedStream?: (stream: MediaStream | null) => void
 }
 
-const WASM_PATH = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm'
+const WASM_PATH = '/mediapipe'
 const MODEL_PATH = 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/1/selfie_segmenter.tflite'
 const PROCESSING_WIDTH = 640
 
@@ -193,8 +193,19 @@ export default function VirtualBackgroundVideo({
 
   return (
     <>
-      <video ref={sourceVideo} autoPlay playsInline muted className="sr-only" aria-hidden="true" />
-      <canvas ref={canvasRef} className={className} aria-label="Processed camera preview" />
+      <video
+        ref={sourceVideo}
+        autoPlay
+        playsInline
+        muted
+        className="pointer-events-none absolute inset-0 size-full object-cover opacity-0"
+        aria-hidden="true"
+      />
+      <canvas
+        ref={canvasRef}
+        className={`absolute inset-0 block size-full object-cover ${className ?? ''}`}
+        aria-label="Processed camera preview"
+      />
     </>
   )
 }
